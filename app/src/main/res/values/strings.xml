@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ThinkFast</string>
+    <string name="gameoverTxt">GAME OVER!</string>
 </resources>
