@@ -1,4 +1,4 @@
 package edu.ucsb.cs.cs184.thinkfast.thinkfast;
 
-public class TouchMazeFragment {
+public class TouchMazeFragment extends Fragment {
 }
