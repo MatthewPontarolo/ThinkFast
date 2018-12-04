@@ -56,6 +56,7 @@ public class CallOutFragment extends Fragment {
         }
         final TextView guess = view.findViewById(R.id.word);
         guess.setText(construct);
+        guess.setTextColor(Color.BLACK);
 
         Log.d("debuglog", "word: " + chosenWord);
 
@@ -109,8 +110,12 @@ public class CallOutFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable(){
                             @Override
                             public void run() {
-                                guess.setText(chosenWord);
-                                guess.setTextColor(Color.BLACK);
+                                String construct = "";
+                                for (char c : chosenWord.toCharArray()) {
+                                    construct += c + " ";
+                                }
+                                guess.setText(construct);
+                                guess.setTextColor(Color.GREEN);
                             }
                         });
 
