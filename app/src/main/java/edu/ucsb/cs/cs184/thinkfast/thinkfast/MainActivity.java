@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs184.thinkfast.thinkfast;
 
 import android.graphics.Color;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,11 +44,43 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }, 1000, 1000);
+
+        getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragmentHolder, new StartFragment());
+        fragmentTransaction.commit();
+
+        Log.d("debuglog", "starting up");
+    }
+
+    public void Begin() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentHolder, new CallOutFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     public void CompleteMinigame() {
         gameoverTime += 10000;
         RefreshTimer();
+
+        Log.d("debuglog", "completed minigame");
+
+        Timer moveTimer = new Timer();
+        moveTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragmentHolder, new CallOutFragment());
+                        transaction.commit();
+                        Log.d("debuglog", "creating a new minigame");
+                    }
+                });
+            }
+        }, 1500);
     }
 
     public void RefreshTimer() {

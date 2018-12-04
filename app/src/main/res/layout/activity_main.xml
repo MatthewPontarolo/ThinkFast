@@ -17,8 +17,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="testText" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/fragmentsPager"
+    <LinearLayout
+        android:id="@+id/fragmentHolder"
         android:layout_width="match_parent"
         android:layout_height="483dp"
         android:layout_marginBottom="8dp"
