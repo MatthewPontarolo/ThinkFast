@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -21,10 +20,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CallOutFragment extends Fragment {
+public class CallOutFragment extends Fragment implements Minigame {
 
     String[] dictionary = new String[]{ "apple", "banana", "coconut", "guava", "honeydew", "mango", "peach", "pomegranate", "strawberry",
-                                        "artichoke", "broccoli", "carrot", "eggplant", "fennel", "garlic", "horseradish", "lettuce", "potato",
+                                        "artichoke", "broccoli", "carrot", "eggplant", "fennel", "garlic", "horseradish", "lettuce", "potato", "onion", "radish",
                                         "raincloud", "thunderstorm", "lightning", "hailstorm", "tornado", "hurricane", "mudslide", "forest fire",
                                         "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe" };
 
@@ -95,6 +94,9 @@ public class CallOutFragment extends Fragment {
                     speech.cancel();
                     speech.startListening(recognizerIntent);
                 }
+                /*if (error == 9 || error == 2) {
+                    ((MainActivity)getActivity()).CompleteMinigame();
+                }*/
             }
 
             @Override

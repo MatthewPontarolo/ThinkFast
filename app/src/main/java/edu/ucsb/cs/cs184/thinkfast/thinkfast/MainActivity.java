@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs184.thinkfast.thinkfast;
 
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragmentHolder, new StartFragment());
+        fragmentTransaction.commit();
+
+        Log.d("debuglog", "starting up");
+    }
+
+    public void Begin() {
         gameoverTime = System.currentTimeMillis() + 60000;
         RefreshTimer();
 
@@ -32,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable(){
                     @Override
                     public void run() {
-                        int secs = (int)((gameoverTime - System.currentTimeMillis()) / 1000);
+                        int secs = (int)((gameoverTime - System.currentTimeMillis()) / 1000 + .5);
                         String txt = secs + " secs";
                         timerText.setText(txt);
                         if (secs <= 10) {
@@ -43,17 +53,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 1000, 1000);
+        }, 1, 1000);
 
-        getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragmentHolder, new StartFragment());
-        fragmentTransaction.commit();
-
-        Log.d("debuglog", "starting up");
-    }
-
-    public void Begin() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentHolder, new CallOutFragment());
         transaction.addToBackStack(null);
@@ -74,9 +75,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.fragmentHolder, new CallOutFragment());
+                        transaction.replace(R.id.fragmentHolder, (Fragment)GetMinigame());
                         transaction.commit();
-                        Log.d("debuglog", "creating a new minigame");
                     }
                 });
             }
@@ -101,5 +101,9 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }, new Date(gameoverTime));
+    }
+
+    public Minigame GetMinigame() {
+        return new CallOutFragment();
     }
 }
