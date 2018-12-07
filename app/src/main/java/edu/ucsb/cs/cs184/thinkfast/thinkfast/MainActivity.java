@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }, 1, 1000);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentHolder, new CallOutFragment());
+        transaction.replace(R.id.fragmentHolder, (Fragment)GetMinigame());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -104,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Minigame GetMinigame() {
-        return new CallOutFragment();
+        Random random = new Random();
+        switch(random.nextInt(2)){
+            case 0:
+                return new CallOutFragment();
+            case 1:
+            default:
+                return new TouchMazeFragment();
+        }
+
     }
 }
