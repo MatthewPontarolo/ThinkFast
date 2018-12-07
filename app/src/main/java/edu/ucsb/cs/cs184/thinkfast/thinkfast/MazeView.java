@@ -66,9 +66,8 @@ public class MazeView extends View {
     public boolean onTouchEvent(MotionEvent event){
         if(!won) {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                if (bitmap.getPixel((int) event.getX(), (int) event.getY()) == Color.BLUE) {
-                    playing = true;
-                } else {
+                playing = true;
+                if (bitmap.getPixel((int) event.getX(), (int) event.getY()) != Color.BLUE) {
                     invalidate();
                 }
             } else if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
