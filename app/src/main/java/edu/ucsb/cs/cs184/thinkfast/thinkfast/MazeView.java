@@ -28,7 +28,6 @@ public class MazeView extends View {
     boolean showRed = false;
     boolean showGreen = false;
 
-
     public MazeView(Context context) {
         super(context);
     }
