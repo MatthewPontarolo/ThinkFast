@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 return new MathFragment();
             default:
                 return new TouchMazeFragment();
+
         }
 
     }

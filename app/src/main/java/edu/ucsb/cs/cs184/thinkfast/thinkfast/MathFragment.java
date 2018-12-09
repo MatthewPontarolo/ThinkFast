@@ -1,15 +1,21 @@
 package edu.ucsb.cs.cs184.thinkfast.thinkfast;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.hardware.SensorEventListener;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -39,6 +45,12 @@ public class MathFragment extends Fragment implements Minigame {
     Timer timer;
     int count = 0;
     View view;
+    private SensorManager mSensorManager;
+    private float mAccel; // acceleration apart from gravity
+    private float mAccelCurrent; // current acceleration including gravity
+    private float mAccelLast; // last acceleration including gravity
+
+    private static final int SHAKE_THRESHOLD = 800;
 
 
     @Nullable
@@ -80,6 +92,25 @@ public class MathFragment extends Fragment implements Minigame {
             // on invalid ---> red screen
             // on valid ----> green screen completeMiniGame()
 
+
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager.registerListener(sensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+
+        mAccelCurrent = SensorManager.GRAVITY_EARTH;
+        mAccelLast = SensorManager.GRAVITY_EARTH;
+        mAccel = 0.00f;
+
+        ShakeDetector detector = new ShakeDetector();
+        detector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake(int count) {
+                Log.e("debuglog", "SHOOKEN");
+
+                Toast.makeText(getContext(), "SHOOOKE", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         return view;
     }
 
@@ -99,4 +130,34 @@ public class MathFragment extends Fragment implements Minigame {
     {
         text.setText(displayQ);
     }
+
+    private final SensorEventListener sensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            mAccelLast = mAccelCurrent;
+            mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
+            float delta = mAccelCurrent - mAccelLast;
+            mAccel = mAccel * 0.9f + delta;
+
+            if (mAccel > 8)
+            {
+                Log.d("debuglog", "SHOOKEN");
+
+                Toast.makeText(getContext(), "SHAKE", Toast.LENGTH_SHORT).show();
+                ((MainActivity)getActivity()).CompleteMinigame();
+            }
+
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
+
+
 }
