@@ -34,7 +34,7 @@ public class MazeView extends View {
 
     public MazeView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        maze_size = ((MainActivity)context).getScore()/3+3;
+        maze_size = (int)Math.sqrt(((MainActivity)context).getScore())+3;
     }
 
 
@@ -107,7 +107,7 @@ public class MazeView extends View {
                     showRed = true;
                     invalidate();
                 }
-            } else if (event.getActionMasked() == MotionEvent.ACTION_POINTER_UP || event.getActionMasked() == MotionEvent.ACTION_UP) {
+            } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                 showRed = false;
                 invalidate();
             }
