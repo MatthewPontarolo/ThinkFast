@@ -18,26 +18,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class CallOutFragment extends Fragment implements Minigame {
 
-    String[] dictionary = new String[]{ "apple", "banana", "coconut", "guava", "honeydew", "mango", "peach", "pomegranate", "strawberry",
-                                        "artichoke", "broccoli", "carrot", "eggplant", "fennel", "garlic", "horseradish", "lettuce", "potato", "onion", "radish",
-                                        "raincloud", "thunderstorm", "lightning", "hailstorm", "tornado", "hurricane", "mudslide", "forest fire",
-                                        "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe" };
+    HashMap<String, String[]> dict = new HashMap<>();
 
-    String chosenWord = "";
+    public static String chosenWord = "";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.callout_fragment, container,false);
 
+        dict.put("Fruits", new String[] { "apple", "banana", "coconut", "guava", "honeydew", "mango", "peach", "pomegranate", "raspberry", "strawberry" });
+        dict.put("Vegetables", new String[] { "artichoke", "broccoli", "carrot", "eggplant", "fennel", "garlic", "horseradish", "lettuce", "potato", "onion", "radish" });
+        dict.put("Weather", new String[] { "raincloud", "thunderstorm", "lightning", "hailstorm", "tornado", "hurricane", "mudslide", "forest fire" });
+        dict.put("Countries", new String[] { "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe" });
+
         requestRecordAudioPermission();
 
         Random rnd = new Random();
-        chosenWord = dictionary[rnd.nextInt(dictionary.length)];
+        String cat = (String)dict.keySet().toArray()[rnd.nextInt(dict.keySet().size())];
+        chosenWord = dict.get(cat)[rnd.nextInt(dict.get(cat).length)];//dictionary[rnd.nextInt(dictionary.length)];
 
         char[] blanked = chosenWord.toCharArray();
         int numBlanks = (int)(chosenWord.length() / 2.0 + .5) - 1;
@@ -56,6 +60,9 @@ public class CallOutFragment extends Fragment implements Minigame {
         final TextView guess = view.findViewById(R.id.word);
         guess.setText(construct);
         guess.setTextColor(Color.BLACK);
+
+        final TextView cate = view.findViewById(R.id.catTxt);
+        cate.setText(cat);
 
         Log.d("debuglog", "word: " + chosenWord);
 
@@ -90,8 +97,9 @@ public class CallOutFragment extends Fragment implements Minigame {
             @Override
             public void onError(int error) {
                 Log.d("debuglog", "error " + error);
-                if (error == 7|| error == 6) {
-                    speech.cancel();
+                if (error == 7 || error == 6) {
+                    //speech.cancel();
+                    speech.stopListening();
                     speech.startListening(recognizerIntent);
                 }
                 /*if (error == 9 || error == 2) {
@@ -104,8 +112,9 @@ public class CallOutFragment extends Fragment implements Minigame {
                 ArrayList<String> strs = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 Boolean correct = false;
                 for (String result : strs) {
-                    Log.d("debuglog", "found word " + result);
-                    if (result.toLowerCase().equals(chosenWord.toLowerCase())) {
+                    Log.d("debuglog", "found word " + result + " and looking for " + chosenWord);
+                    if (result.toLowerCase().contains(chosenWord.toLowerCase())
+                            || result.toLowerCase().equals(chosenWord.toLowerCase())) {
                         Log.d("debuglog", "Correct!");
                         correct = true;
 
@@ -122,6 +131,7 @@ public class CallOutFragment extends Fragment implements Minigame {
                         });
 
                         ((MainActivity)getActivity()).CompleteMinigame();
+                        break;
                     }
                 }
 
@@ -129,8 +139,8 @@ public class CallOutFragment extends Fragment implements Minigame {
                     speech.cancel();
                     speech.startListening(recognizerIntent);
                 } else {
-                    speech.cancel();
                     speech.stopListening();
+                    speech.cancel();
                     speech.destroy();
                 }
             }

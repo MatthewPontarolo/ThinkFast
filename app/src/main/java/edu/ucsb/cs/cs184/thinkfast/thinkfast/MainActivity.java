@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     public Minigame GetMinigame() {
         Random random = new Random();
-        switch(random.nextInt(2)){
+        switch(random.nextInt(1)) { //2
             case 0:
                 return new CallOutFragment();
             case 1:
