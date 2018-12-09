@@ -77,6 +77,8 @@ public class MathFragment extends Fragment implements Minigame {
 
         // @TODO: ShakeActivity detection
             // validate(evens, chosen)
+            // on invalid ---> red screen
+            // on valid ----> green screen completeMiniGame()
 
         return view;
     }
