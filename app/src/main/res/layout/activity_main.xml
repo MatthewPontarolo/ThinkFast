@@ -10,7 +10,22 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text=""
-        android:textAlignment="center"
+        android:gravity="left"
+        android:textAlignment="gravity"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="testText" />
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="right"
+        android:text=""
+        android:textAlignment="gravity"
+        android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

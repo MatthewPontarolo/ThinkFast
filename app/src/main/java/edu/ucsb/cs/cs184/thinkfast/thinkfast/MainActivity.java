@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     static Timer timer = new Timer();
     static long gameoverTime;
     static Timer textTimer = new Timer();
+    int score = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         RefreshTimer();
 
         final TextView timerText = findViewById(R.id.timerText);
+        final TextView scoreText = findViewById(R.id.scoreText);
         textTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             timerText.setTextColor(Color.BLACK);
                         }
+                        String scr = "Score: " + score;
+                        scoreText.setText(scr);
                     }
                 });
             }
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void CompleteMinigame() {
         gameoverTime += 10000;
+        score++;
         RefreshTimer();
 
         Log.d("debuglog", "completed minigame");
@@ -114,5 +120,9 @@ public class MainActivity extends AppCompatActivity {
                 return new TouchMazeFragment();
         }
 
+    }
+
+    public int getScore(){
+        return score;
     }
 }

@@ -7,24 +7,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * TODO: document your custom view class.
  */
 public class MazeView extends View {
-    private static final int MAZE_WIDTH = 7;
+    private int maze_size;
     int cellSize;
     int paddingSize;
     Random random = new Random();
@@ -41,6 +35,7 @@ public class MazeView extends View {
 
     public MazeView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        maze_size = ((MainActivity)context).getScore()/3+3;
     }
 
 
@@ -52,7 +47,7 @@ public class MazeView extends View {
         if (bitmap == null) {
             bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             bmpCanvas = new Canvas(bitmap);
-            int c = MAZE_WIDTH;
+            int c = maze_size;
             int r = (height*c/width);
             cellSize = (int)(width/(1.5*c+0.5));
             paddingSize = cellSize/2;
