@@ -31,7 +31,7 @@ public class MathFragment extends Fragment implements Minigame {
      */
     // @TODO: check for overlaps in categories...
     String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3", "2+4*6", "2", "54", "44", "78"};
-    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9", "2+1*3", "4+3", "7+8*3", "33"};
+    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9", "2+1*3", "4+3", "7+8*3", "33", "3", "5", "7", "11", "13", "23", "29", "31"};
     String[] primes = new String[]{"1", "3", "5", "7", "11", "13", "23", "29", "31", "1+2", "2+3", "2+1*3", "4+3", "7+8*3"};
     //String[] integers = new String[]{"1", "44", "123", "54", "69", "78"};
 
