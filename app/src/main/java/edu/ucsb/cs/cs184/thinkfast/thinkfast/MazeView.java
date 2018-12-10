@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -27,6 +28,7 @@ public class MazeView extends View {
     Canvas bmpCanvas;
     boolean showRed = false;
     boolean showGreen = false;
+    float curX = -1, curY = -1;
 
     public MazeView(Context context) {
         super(context);
@@ -84,6 +86,12 @@ public class MazeView extends View {
         }
         else {
             canvas.drawBitmap(bitmap, 0, 0, null);
+            if(curX >= 0 && curY >= 0){
+                paint.setColor(Color.GRAY);
+                paint.setStrokeWidth(10);
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawCircle(curX, curY, cellSize/8, paint);
+            }
         }
     }
 
@@ -107,7 +115,14 @@ public class MazeView extends View {
                     showRed = true;
                     invalidate();
                 }
+                else{
+                    curX = event.getX();
+                    curY = event.getY();
+                    invalidate();
+                }
             } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                curX = -1;
+                curY = -1;
                 showRed = false;
                 invalidate();
             }
