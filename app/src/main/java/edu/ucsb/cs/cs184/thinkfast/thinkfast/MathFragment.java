@@ -29,10 +29,13 @@ public class MathFragment extends Fragment implements Minigame {
     /*
         Types of question sets with a common relationship
      */
-    String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3"};
-    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9"};
+    // @TODO: check for overlaps in categories...
+    String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3", "2+4*6", "2", "54", "44", "78"};
+    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9", "2+1*3", "4+3", "7+8*3", "33"};
+    String[] primes = new String[]{"1", "3", "5", "7", "11", "13", "23", "29", "31", "2+3", "2+1*3", "4+3", "7+8*3"};
+    //String[] integers = new String[]{"1", "44", "123", "54", "69", "78"};
 
-    String[] list = new String[] {"Evens", "Odds"};
+    String[] list;
 
 
     /*
@@ -47,9 +50,8 @@ public class MathFragment extends Fragment implements Minigame {
 
 
     /*
-        Sets of questions
+        Sets of questions <Type, Question List>
      */
-    //ArrayList<String[]> masterSets = new ArrayList<String[]>();
     Map<String, String[]> masterSets = new HashMap<>();
 
 
@@ -67,8 +69,6 @@ public class MathFragment extends Fragment implements Minigame {
     private Runnable thread;
 
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -79,7 +79,10 @@ public class MathFragment extends Fragment implements Minigame {
 
         masterSets.put("Evens", evens);
         masterSets.put("Odds", odds);
+        masterSets.put("Primes", primes);
+        //masterSets.put("Integers", integers);
 
+        list = new String[]{"Evens", "Odds", "Primes"};
 
         // choose a target category randomly
         //targetQ = evens;
@@ -87,9 +90,10 @@ public class MathFragment extends Fragment implements Minigame {
         String type = list[rnd.nextInt(list.length)];
         targetQ = masterSets.get(type);
         Toast.makeText(getContext(), "Shake on " + type, Toast.LENGTH_SHORT).show();
+        Log.d("debuglog", "Type Chosen:" + type);
+
 
         masterQ = setUpQuestions(masterSets);
-
 
         timer = new Timer();
 
@@ -100,7 +104,7 @@ public class MathFragment extends Fragment implements Minigame {
         }
         catch (Exception e)
         {
-
+            Log.d("debuglog", "Timer wait failed....");
         }
 
         // Intervals to shuffle questions
@@ -116,11 +120,10 @@ public class MathFragment extends Fragment implements Minigame {
                     }
                 });
             }
-        }, 1, 2000);
+        }, 1, 3000);
 
 
         // ShakeActivity detection
-            // validate(evens, chosen)
             // @TODO: on invalid ---> red screen
             // @TODO: on valid ----> green screen completeMiniGame()
 
