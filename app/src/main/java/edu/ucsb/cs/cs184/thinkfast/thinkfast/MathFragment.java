@@ -18,6 +18,8 @@ import android.widget.Toast;
 import android.hardware.SensorEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,6 +31,9 @@ public class MathFragment extends Fragment implements Minigame {
      */
     String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3"};
     String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9"};
+
+    String[] list = new String[] {"Evens", "Odds"};
+
 
     /*
         Questions user should be shaking on
@@ -44,7 +49,9 @@ public class MathFragment extends Fragment implements Minigame {
     /*
         Sets of questions
      */
-    ArrayList<String[]> masterSets = new ArrayList<String[]>();
+    //ArrayList<String[]> masterSets = new ArrayList<String[]>();
+    Map<String, String[]> masterSets = new HashMap<>();
+
 
     TextView text;
     Timer timer;
@@ -60,23 +67,41 @@ public class MathFragment extends Fragment implements Minigame {
     private Runnable thread;
 
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         view = inflater.inflate(R.layout.math_fragment, container, false);
         text = view.findViewById(R.id.question);
-        text.setText("Shake");
+        //text.setText("Shake on Evens");
 
-        masterSets.add(evens);
-        masterSets.add(odds);
+        masterSets.put("Evens", evens);
+        masterSets.put("Odds", odds);
 
-        targetQ = evens;
+
+        // choose a target category randomly
+        //targetQ = evens;
+        Random rnd = new Random();
+        String type = list[rnd.nextInt(list.length)];
+        targetQ = masterSets.get(type);
+        Toast.makeText(getContext(), "Shake on " + type, Toast.LENGTH_SHORT).show();
 
         masterQ = setUpQuestions(masterSets);
 
 
         timer = new Timer();
+
+        try
+        {
+            timer.wait(1000);
+
+        }
+        catch (Exception e)
+        {
+
+        }
 
         // Intervals to shuffle questions
         timer.schedule(new TimerTask() {
@@ -132,18 +157,19 @@ public class MathFragment extends Fragment implements Minigame {
     }
 
 
-    public ArrayList<String> setUpQuestions(ArrayList<String[]> sets)
+    public ArrayList<String> setUpQuestions(Map<String, String[]> sets)
     {
         //foreach (sets )
         ArrayList<String> masterQ = new ArrayList<>();
-        for (String[] set : sets)
-        {
 
-            for (int i = 0; i < set.length; i++)
+        for (String[] type : sets.values())
+        {
+            for (int i = 0; i < type.length; i++)
             {
-                masterQ.add(set[i]);
+                masterQ.add(type[i]);
             }
         }
+
         return masterQ;
     }
     public void setDisplayQ(String displayQ)
