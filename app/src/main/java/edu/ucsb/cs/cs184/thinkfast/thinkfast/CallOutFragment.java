@@ -34,8 +34,10 @@ public class CallOutFragment extends Fragment implements Minigame {
 
         dict.put("Fruits", new String[] { "apple", "banana", "coconut", "guava", "honeydew", "mango", "peach", "pomegranate", "raspberry", "strawberry" });
         dict.put("Vegetables", new String[] { "artichoke", "broccoli", "carrot", "eggplant", "fennel", "garlic", "horseradish", "lettuce", "potato", "onion", "radish" });
-        dict.put("Weather", new String[] { "raincloud", "thunderstorm", "lightning", "hailstorm", "tornado", "hurricane", "mudslide", "forest fire" });
-        dict.put("Countries", new String[] { "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe" });
+        dict.put("Weather/Disasters", new String[] { "raincloud", "thunderstorm", "lightning", "hailstorm", "tornado", "hurricane", "mudslide", "forest fire", "volcano", "earthquake", "flooding", "monsoon", "typhoon", "sandstorm" });
+        dict.put("Countries", new String[] { "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe", "Costa Rica", "England", "Somalia", "Kazakhstan", "Tunisia", "Canada", "Sweden", "Brazil", "Argentina", "Panama", "Mexico" });
+        dict.put("US Presidents", new String[] { "Washington", "Lincoln", "Cleveland", "Coolidge", "Obama", "Jefferson", "Madison", "Monroe", "Jackson", "Buchanan", "Filmore", "Roosevelt", "Harding", "Truman", "Reagan", "Kennedy", "Clinton", "Nixon" });
+        dict.put("Jobs", new String[] { "firefighter", "policeman", "nurse", "programmer", "professor", "waitress", "urban planner", "architect", "surgeon", "janitor", "accountant", "lawyer", "police officer", "teacher", "technician", "handyman", "engineer", "chemist", "receptionist", "salesperson", "diplomat", "politician", "soldier", "lifeguard", "actress", "plumber", "electrician", "musician", "artist" });
 
         requestRecordAudioPermission();
 
