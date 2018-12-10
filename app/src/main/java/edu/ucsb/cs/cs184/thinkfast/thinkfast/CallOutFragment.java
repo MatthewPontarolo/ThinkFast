@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class CallOutFragment extends Fragment implements Minigame {
         dict.put("Colors", new String[] { "fuchsia", "magenta", "crimson", "yellow", "maroon", "bronze", "tangerine", "burgundy", "cerulean", "lavender" });
 
         requestRecordAudioPermission();
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Random rnd = new Random();
         String cat = (String)dict.keySet().toArray()[rnd.nextInt(dict.keySet().size())];
