@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     static long gameoverTime;
     static Timer textTimer = new Timer();
     int score = 0;
-
+    static Minigame minigame = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Begin() {
-        gameoverTime = System.currentTimeMillis() + 50000;
+        gameoverTime = System.currentTimeMillis() + 45000;
         RefreshTimer();
 
         final TextView timerText = findViewById(R.id.timerText);
@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         }, 1, 1000);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentHolder, (Fragment)GetMinigame());
+        minigame = GetMinigame();
+        transaction.replace(R.id.fragmentHolder, (Fragment)minigame);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.fragmentHolder, (Fragment)GetMinigame());
+                        minigame = GetMinigame();
+                        transaction.replace(R.id.fragmentHolder, (Fragment)minigame);
                         transaction.commit();
                     }
                 });
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 //GAME OVER
                 Log.d("debuglog", "Game over");
+                minigame.gameOver();
                 textTimer.cancel();
                 runOnUiThread(new Runnable(){
                     @Override
@@ -113,10 +116,12 @@ public class MainActivity extends AppCompatActivity {
 
     public Minigame GetMinigame() {
         Random random = new Random();
-        switch(random.nextInt(2)) {
+        switch(random.nextInt(3)) {
             case 0:
                 return new CallOutFragment();
             case 1:
+                return new TouchMazeFragment();
+            case 2:
                 return new MathFragment();
             default:
                 return new TouchMazeFragment();

@@ -114,17 +114,21 @@ public class MathFragment extends Fragment implements Minigame {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable(){
-                    @Override
-                    public void run() {
-                        Random rnd = new Random();
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Random rnd = new Random();
 
-                        String str = "Shake on " + type + "!";
-                        prompt.setText(str);
-                        String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
-                        setDisplayQ(displayQ);
-                    }
-                });
+                            String str = "Shake on " + type + "!";
+                            prompt.setText(str);
+                            String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
+                            setDisplayQ(displayQ);
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    Log.d("debuglog", e.toString());
+                }
             }
         }, 1, 3000);
 
@@ -239,6 +243,10 @@ public class MathFragment extends Fragment implements Minigame {
                 });
             }
         }, 1, 2000);
+
+    }
+
+    public void gameOver() {
 
     }
 }

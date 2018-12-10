@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class CallOutFragment extends Fragment implements Minigame {
     HashMap<String, String[]> dict = new HashMap<>();
 
     public static String chosenWord = "";
+    static TextView guess;
+
+    public static SpeechRecognizer speech;
 
     @Nullable
     @Override
@@ -38,13 +42,14 @@ public class CallOutFragment extends Fragment implements Minigame {
         dict.put("Countries", new String[] { "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe", "Costa Rica", "England", "Somalia", "Kazakhstan", "Tunisia", "Canada", "Sweden", "Brazil", "Argentina", "Panama", "Mexico" });
         dict.put("US Presidents", new String[] { "Washington", "Lincoln", "Cleveland", "Coolidge", "Obama", "Jefferson", "Madison", "Monroe", "Jackson", "Buchanan", "Filmore", "Roosevelt", "Harding", "Truman", "Reagan", "Kennedy", "Clinton", "Nixon" });
         dict.put("Jobs", new String[] { "firefighter", "policeman", "nurse", "programmer", "professor", "waitress", "urban planner", "architect", "surgeon", "janitor", "accountant", "lawyer", "police officer", "teacher", "technician", "handyman", "engineer", "chemist", "receptionist", "salesperson", "diplomat", "politician", "soldier", "lifeguard", "actress", "plumber", "electrician", "musician", "artist" });
-        dict.put("Colors", new String[] { "fuchsia", "magenta", "crimson", "yellow", "maroon", "bronze", "tangerine", "burgundy", "cerulean", "lavender" });
+        dict.put("Colors", new String[] { "fuchsia", "magenta", "crimson", "yellow", "maroon", "bronze", "tangerine", "burgundy", "cerulean", "lavender", "periwinkle" });
 
         requestRecordAudioPermission();
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Random rnd = new Random();
         String cat = (String)dict.keySet().toArray()[rnd.nextInt(dict.keySet().size())];
-        chosenWord = dict.get(cat)[rnd.nextInt(dict.get(cat).length)];//dictionary[rnd.nextInt(dictionary.length)];
+        chosenWord = dict.get(cat)[rnd.nextInt(dict.get(cat).length)];
 
         char[] blanked = chosenWord.toCharArray();
         int numBlanks = (int)(chosenWord.length() / 2.0 + .5) - 1;
@@ -60,7 +65,7 @@ public class CallOutFragment extends Fragment implements Minigame {
         for (char c : blanked) {
             construct += c + " ";
         }
-        final TextView guess = view.findViewById(R.id.word);
+        guess = view.findViewById(R.id.word);
         guess.setText(construct);
         guess.setTextColor(Color.BLACK);
 
@@ -69,12 +74,24 @@ public class CallOutFragment extends Fragment implements Minigame {
 
         Log.d("debuglog", "word: " + chosenWord);
 
-        final SpeechRecognizer speech = SpeechRecognizer.createSpeechRecognizer(getContext());
+        establishSpeech();
+
+        return view;
+    }
+
+    public void establishSpeech() {
+        speech = SpeechRecognizer.createSpeechRecognizer(getContext());
         final Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en");
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getContext().getPackageName());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, SpeechRecognizer.RESULTS_RECOGNITION);
+
         speech.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle params) {
-                Log.d("debuglog", "ready for speech");
+                Log.d("debuglog", "ready for speech " + params.toString());
             }
 
             @Override
@@ -100,14 +117,11 @@ public class CallOutFragment extends Fragment implements Minigame {
             @Override
             public void onError(int error) {
                 Log.d("debuglog", "error " + error);
-                if (error == 7 || error == 6) {
-                    //speech.cancel();
-                    speech.stopListening();
-                    speech.startListening(recognizerIntent);
+                if (error == 7 || error == 6 || error == 8) {
+                    speech.destroy();
+                    establishSpeech();
+                    //speech.startListening(recognizerIntent);
                 }
-                /*if (error == 9 || error == 2) {
-                    ((MainActivity)getActivity()).CompleteMinigame();
-                }*/
             }
 
             @Override
@@ -121,17 +135,21 @@ public class CallOutFragment extends Fragment implements Minigame {
                         Log.d("debuglog", "Correct!");
                         correct = true;
 
-                        getActivity().runOnUiThread(new Runnable(){
-                            @Override
-                            public void run() {
-                                String construct = "";
-                                for (char c : chosenWord.toCharArray()) {
-                                    construct += c + " ";
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String construct = "";
+                                    for (char c : chosenWord.toCharArray()) {
+                                        construct += c + " ";
+                                    }
+                                    guess.setText(construct);
+                                    guess.setTextColor(Color.GREEN);
                                 }
-                                guess.setText(construct);
-                                guess.setTextColor(Color.GREEN);
-                            }
-                        });
+                            });
+                        } catch (NullPointerException e) {
+                            Log.d("debuglog", e.toString());
+                        }
 
                         ((MainActivity)getActivity()).CompleteMinigame();
                         break;
@@ -139,8 +157,10 @@ public class CallOutFragment extends Fragment implements Minigame {
                 }
 
                 if (!correct) {
-                    speech.cancel();
-                    speech.startListening(recognizerIntent);
+                    //speech.stopListening();
+                    //speech.startListening(recognizerIntent);
+                    speech.destroy();
+                    establishSpeech();
                 } else {
                     speech.stopListening();
                     speech.cancel();
@@ -155,17 +175,28 @@ public class CallOutFragment extends Fragment implements Minigame {
 
             @Override
             public void onEvent(int eventType, Bundle params) {
-
+                Log.d("debuglog", "event " + eventType + " happened!");
             }
         });
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en");
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getContext().getPackageName());
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-        speech.cancel();
+        //speech.cancel();
         speech.startListening(recognizerIntent);
+    }
 
-        return view;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        speech.cancel();
+        speech.destroy();
+    }
+
+    public void gameOver() {
+        getView().post(new Runnable(){
+            public void run(){
+                speech.stopListening();
+                speech.destroy();
+            }
+        });
     }
 
     private void requestRecordAudioPermission() {
