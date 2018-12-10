@@ -3,4 +3,5 @@
     <string name="gameoverTxt">GAME OVER!</string>
     <string name="start">Start!</string>
     <string name="question">Question</string>
+    <string name="shake">Shake!</string>
 </resources>

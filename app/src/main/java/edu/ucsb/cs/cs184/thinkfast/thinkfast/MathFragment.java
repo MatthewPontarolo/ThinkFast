@@ -56,17 +56,17 @@ public class MathFragment extends Fragment implements Minigame {
 
 
     TextView text;
+    TextView prompt;
     Timer timer;
     int count = 0;
     View view;
+    String type;
     private SensorManager mSensorManager;
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
     private float mAccelLast; // last acceleration including gravity
 
     private static final int SHAKE_THRESHOLD = 800;
-
-    private Runnable thread;
 
 
     @Nullable
@@ -75,6 +75,7 @@ public class MathFragment extends Fragment implements Minigame {
     {
         view = inflater.inflate(R.layout.math_fragment, container, false);
         text = view.findViewById(R.id.question);
+        prompt = view.findViewById(R.id.prompt);
         //text.setText("Shake on Evens");
 
         masterSets.put("Evens", evens);
@@ -87,10 +88,12 @@ public class MathFragment extends Fragment implements Minigame {
         // choose a target category randomly
         //targetQ = evens;
         Random rnd = new Random();
-        String type = list[rnd.nextInt(list.length)];
+        type = list[rnd.nextInt(list.length)];
         targetQ = masterSets.get(type);
-        Toast.makeText(getContext(), "Shake on " + type, Toast.LENGTH_SHORT).show();
-        Log.d("debuglog", "Type Chosen:" + type);
+        //Toast.makeText(getContext(), "Shake on " + type, Toast.LENGTH_SHORT).show();
+        //String str = "Shake on " + type + "!";
+        //prompt.setText(str);
+        Log.d("debuglog", "Type Chosen: " + type);
 
 
         masterQ = setUpQuestions(masterSets);
@@ -115,6 +118,9 @@ public class MathFragment extends Fragment implements Minigame {
                     @Override
                     public void run() {
                         Random rnd = new Random();
+
+                        String str = "Shake on " + type + "!";
+                        prompt.setText(str);
                         String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
                         setDisplayQ(displayQ);
                     }
