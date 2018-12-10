@@ -52,6 +52,8 @@ public class MathFragment extends Fragment implements Minigame {
 
     private static final int SHAKE_THRESHOLD = 800;
 
+    private Runnable thread;
+
 
     @Nullable
     @Override
@@ -81,7 +83,6 @@ public class MathFragment extends Fragment implements Minigame {
                         String displayQ = targetQ[rnd.nextInt(targetQ.length)];
                         setDisplayQ(displayQ);
                         // break out of thread
-
                     }
                 });
             }
@@ -108,6 +109,11 @@ public class MathFragment extends Fragment implements Minigame {
                 Log.e("debuglog", "SHOOKEN");
 
                 Toast.makeText(getContext(), "SHOOOKE", Toast.LENGTH_SHORT).show();
+                TextView text = view.findViewById(R.id.question);
+
+                timer.cancel();
+                ((MainActivity)getActivity()).CompleteMinigame();
+                //validate(targetQ, text.getText());
             }
         });
 
@@ -149,6 +155,9 @@ public class MathFragment extends Fragment implements Minigame {
                 Log.d("debuglog", "SHOOKEN");
 
                 Toast.makeText(getContext(), "SHAKE", Toast.LENGTH_SHORT).show();
+                timer.purge();
+                timer.cancel();
+                ((MainActivity)getActivity()).CompleteMinigame();
             }
 
         }
