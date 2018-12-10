@@ -83,10 +83,11 @@ public class MathFragment extends Fragment implements Minigame {
                         String displayQ = targetQ[rnd.nextInt(targetQ.length)];
                         setDisplayQ(displayQ);
                         // break out of thread
+                        
                     }
                 });
             }
-        }, 1, 2000);
+        }, 1, 5000);
 
 
         // @TODO: ShakeActivity detection
@@ -102,29 +103,20 @@ public class MathFragment extends Fragment implements Minigame {
         mAccelLast = SensorManager.GRAVITY_EARTH;
         mAccel = 0.00f;
 
-        ShakeDetector detector = new ShakeDetector();
-        detector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake(int count) {
-                Log.e("debuglog", "SHOOKEN");
-
-                Toast.makeText(getContext(), "SHOOOKE", Toast.LENGTH_SHORT).show();
-                TextView text = view.findViewById(R.id.question);
-
-                timer.cancel();
-                ((MainActivity)getActivity()).CompleteMinigame();
-                //validate(targetQ, text.getText());
-            }
-        });
-
-
         return view;
     }
 
-    public boolean validate(String[] questions, String chosen)
+    public void validate(String[] questions, String chosen)
     {
+        boolean x = true;
+        if (x)
+        {
+            timer.purge();
+            timer.cancel();
+            mSensorManager.unregisterListener(sensorListener);
+            ((MainActivity)getActivity()).CompleteMinigame();
 
-        return true;
+        }
     }
 
 
@@ -152,12 +144,11 @@ public class MathFragment extends Fragment implements Minigame {
 
             if (mAccel > 8)
             {
-                Log.d("debuglog", "SHOOKEN");
+                Log.d("debuglog", text.getText().toString());
 
                 Toast.makeText(getContext(), "SHAKE", Toast.LENGTH_SHORT).show();
-                timer.purge();
-                timer.cancel();
-                ((MainActivity)getActivity()).CompleteMinigame();
+                validate(targetQ, "");
+
             }
 
         }

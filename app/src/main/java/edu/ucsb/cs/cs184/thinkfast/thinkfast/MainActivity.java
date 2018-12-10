@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Begin() {
-        gameoverTime = System.currentTimeMillis() + 60000;
+        gameoverTime = System.currentTimeMillis() + 50000;
         RefreshTimer();
 
         final TextView timerText = findViewById(R.id.timerText);
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void CompleteMinigame() {
-        gameoverTime += 10000;
+        gameoverTime += 3000;
         score++;
         RefreshTimer();
 
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         final TextView timerText = findViewById(R.id.timerText);
                         timerText.setText(getString(R.string.gameoverTxt));
+                        Restart();
                     }
                 });
             }
@@ -112,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
     public Minigame GetMinigame() {
         Random random = new Random();
-        switch(random.nextInt(2)) { //2
+        switch(random.nextInt(2)) {
             case 0:
-                return new CallOutFragment();
+                //return new CallOutFragment();
+                return new TouchMazeFragment();
+
             case 1:
                 return new MathFragment();
             case 2:
@@ -129,4 +132,13 @@ public class MainActivity extends AppCompatActivity {
     public int getScore(){
         return score;
     }
+
+    public void Restart(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentHolder, new StartFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
+        textTimer = new Timer();
+        score = 0;
+    };
 }
