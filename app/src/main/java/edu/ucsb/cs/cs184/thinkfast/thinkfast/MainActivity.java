@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Begin() {
-        gameoverTime = System.currentTimeMillis() + 60000;
+        gameoverTime = System.currentTimeMillis() + 50000;
         RefreshTimer();
 
         final TextView timerText = findViewById(R.id.timerText);
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void CompleteMinigame() {
-        gameoverTime += 10000;
+        gameoverTime += 3000;
         score++;
         RefreshTimer();
 
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     public Minigame GetMinigame() {
         Random random = new Random();
-        switch(random.nextInt(1)) { //2
+        switch(random.nextInt(2)) {
             case 0:
                 return new CallOutFragment();
             case 1:
