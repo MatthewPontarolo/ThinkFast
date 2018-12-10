@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         final TextView timerText = findViewById(R.id.timerText);
                         timerText.setText(getString(R.string.gameoverTxt));
+                        Restart();
                     }
                 });
             }
@@ -125,4 +126,13 @@ public class MainActivity extends AppCompatActivity {
     public int getScore(){
         return score;
     }
+
+    public void Restart(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentHolder, new StartFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
+        textTimer = new Timer();
+        score = 0;
+    };
 }
