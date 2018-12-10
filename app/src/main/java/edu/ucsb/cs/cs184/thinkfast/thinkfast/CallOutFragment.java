@@ -38,6 +38,7 @@ public class CallOutFragment extends Fragment implements Minigame {
         dict.put("Countries", new String[] { "Algeria", "Belarus", "Cambodia", "Denmark", "Ethiopia", "Finland", "Germany", "Hungary", "Iceland", "Jamaica", "Kuwait", "Lithuania", "Morocco", "Nigeria", "Oman", "Pakistan", "Qatar", "Russia", "Saudi Arabia", "Taiwan", "Ukraine", "Vanuatu", "Wales", "Yemen", "Zimbabwe", "Costa Rica", "England", "Somalia", "Kazakhstan", "Tunisia", "Canada", "Sweden", "Brazil", "Argentina", "Panama", "Mexico" });
         dict.put("US Presidents", new String[] { "Washington", "Lincoln", "Cleveland", "Coolidge", "Obama", "Jefferson", "Madison", "Monroe", "Jackson", "Buchanan", "Filmore", "Roosevelt", "Harding", "Truman", "Reagan", "Kennedy", "Clinton", "Nixon" });
         dict.put("Jobs", new String[] { "firefighter", "policeman", "nurse", "programmer", "professor", "waitress", "urban planner", "architect", "surgeon", "janitor", "accountant", "lawyer", "police officer", "teacher", "technician", "handyman", "engineer", "chemist", "receptionist", "salesperson", "diplomat", "politician", "soldier", "lifeguard", "actress", "plumber", "electrician", "musician", "artist" });
+        dict.put("Colors", new String[] { "fuchsia", "magenta", "crimson", "yellow", "maroon", "bronze", "tangerine", "burgundy", "cerulean", "lavender" });
 
         requestRecordAudioPermission();
 
