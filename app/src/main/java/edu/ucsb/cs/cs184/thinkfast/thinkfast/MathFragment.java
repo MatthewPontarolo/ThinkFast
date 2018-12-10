@@ -80,6 +80,7 @@ public class MathFragment extends Fragment implements Minigame {
                         final TextView text = view.findViewById(R.id.question);
                         String displayQ = targetQ[rnd.nextInt(targetQ.length)];
                         setDisplayQ(displayQ);
+                        // break out of thread
 
                     }
                 });
@@ -117,7 +118,7 @@ public class MathFragment extends Fragment implements Minigame {
     public boolean validate(String[] questions, String chosen)
     {
 
-        return false;
+        return true;
     }
 
 
@@ -148,7 +149,6 @@ public class MathFragment extends Fragment implements Minigame {
                 Log.d("debuglog", "SHOOKEN");
 
                 Toast.makeText(getContext(), "SHAKE", Toast.LENGTH_SHORT).show();
-                ((MainActivity)getActivity()).CompleteMinigame();
             }
 
         }

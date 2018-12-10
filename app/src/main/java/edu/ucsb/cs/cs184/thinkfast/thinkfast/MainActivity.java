@@ -112,11 +112,13 @@ public class MainActivity extends AppCompatActivity {
 
     public Minigame GetMinigame() {
         Random random = new Random();
-        switch(random.nextInt(1)) { //2
+        switch(random.nextInt(2d)) { //2
             case 0:
                 return new CallOutFragment();
             case 1:
                 return new MathFragment();
+            case 2:
+                return new TouchMazeFragment();
             default:
                 return new TouchMazeFragment();
 
