@@ -27,13 +27,18 @@ public class MathFragment extends Fragment implements Minigame {
     /*
         Types of question sets with a common relationship
      */
-    String[] evens = new String[]{"1+1", "2+2"};
-    String[] odds = new String[]{"1+2", "2+3"};
+    String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3"};
+    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9"};
 
     /*
         Questions user should be shaking on
      */
     String[] targetQ;
+
+    /*
+        Questions displayed to users
+     */
+    ArrayList<String> masterQ;
 
 
     /*
@@ -68,10 +73,12 @@ public class MathFragment extends Fragment implements Minigame {
 
         targetQ = evens;
 
+        masterQ = setUpQuestions(masterSets);
+
 
         timer = new Timer();
 
-        // @TODO: Intervals to shuffle questions
+        // Intervals to shuffle questions
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -79,22 +86,18 @@ public class MathFragment extends Fragment implements Minigame {
                     @Override
                     public void run() {
                         Random rnd = new Random();
-                        final TextView text = view.findViewById(R.id.question);
-                        String displayQ = targetQ[rnd.nextInt(targetQ.length)];
+                        String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
                         setDisplayQ(displayQ);
-                        // break out of thread
-                        
                     }
                 });
             }
-        }, 1, 5000);
+        }, 1, 2000);
 
 
-        // @TODO: ShakeActivity detection
+        // ShakeActivity detection
             // validate(evens, chosen)
-            // on invalid ---> red screen
-            // on valid ----> green screen completeMiniGame()
-
+            // @TODO: on invalid ---> red screen
+            // @TODO: on valid ----> green screen completeMiniGame()
 
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensorManager.registerListener(sensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
@@ -108,22 +111,40 @@ public class MathFragment extends Fragment implements Minigame {
 
     public void validate(String[] questions, String chosen)
     {
-        boolean x = true;
-        if (x)
+        for (int i = 0; i < questions.length; i++)
         {
-            timer.purge();
-            timer.cancel();
-            mSensorManager.unregisterListener(sensorListener);
-            ((MainActivity)getActivity()).CompleteMinigame();
+            // if found
+            if (questions[i].equals(chosen))
+            {
+                Toast.makeText(getContext(), "Correct!", Toast.LENGTH_SHORT).show();
+                Log.d("debuglog", "Correct!");
+                mSensorManager.unregisterListener(sensorListener);
+                ((MainActivity)getActivity()).CompleteMinigame();
 
+                return;
+            }
         }
+        Toast.makeText(getContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
+        Log.d("debuglog", "Incorrect!");
+
+        // continue shuffling
+        restartTimer();
     }
 
 
-    public String[] setUpQuestions(ArrayList<String[]> sets)
+    public ArrayList<String> setUpQuestions(ArrayList<String[]> sets)
     {
         //foreach (sets )
-        return new String[0];
+        ArrayList<String> masterQ = new ArrayList<>();
+        for (String[] set : sets)
+        {
+
+            for (int i = 0; i < set.length; i++)
+            {
+                masterQ.add(set[i]);
+            }
+        }
+        return masterQ;
     }
     public void setDisplayQ(String displayQ)
     {
@@ -144,10 +165,16 @@ public class MathFragment extends Fragment implements Minigame {
 
             if (mAccel > 8)
             {
-                Log.d("debuglog", text.getText().toString());
+                Log.d("debuglog", "shook on " + text.getText().toString());
 
-                Toast.makeText(getContext(), "SHAKE", Toast.LENGTH_SHORT).show();
-                validate(targetQ, "");
+                //Toast.makeText(getContext(), "SHAKE", Toast.LENGTH_SHORT).show();
+
+                // cancel all tasks
+                timer.purge();
+                timer.cancel();
+
+                // check if valid shake
+                validate(targetQ, text.getText().toString());
 
             }
 
@@ -159,5 +186,24 @@ public class MathFragment extends Fragment implements Minigame {
         }
     };
 
+    public void restartTimer()
+    {
+        timer = new Timer();
 
+        // Intervals to shuffle questions
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        Random rnd = new Random();
+                        String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
+                        setDisplayQ(displayQ);
+                    }
+                });
+            }
+        }, 1, 2000);
+
+    }
 }

@@ -115,9 +115,7 @@ public class MainActivity extends AppCompatActivity {
         Random random = new Random();
         switch(random.nextInt(2)) {
             case 0:
-                //return new CallOutFragment();
-                return new TouchMazeFragment();
-
+                return new CallOutFragment();
             case 1:
                 return new MathFragment();
             case 2:
