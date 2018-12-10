@@ -118,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 return new CallOutFragment();
             case 1:
                 return new MathFragment();
-            case 2:
-                return new TouchMazeFragment();
             default:
                 return new TouchMazeFragment();
 
