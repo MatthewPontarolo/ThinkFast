@@ -28,6 +28,8 @@ public class CallOutFragment extends Fragment implements Minigame {
 
     public static String chosenWord = "";
 
+    public static SpeechRecognizer speech;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class CallOutFragment extends Fragment implements Minigame {
 
         Random rnd = new Random();
         String cat = (String)dict.keySet().toArray()[rnd.nextInt(dict.keySet().size())];
-        chosenWord = dict.get(cat)[rnd.nextInt(dict.get(cat).length)];//dictionary[rnd.nextInt(dictionary.length)];
+        chosenWord = dict.get(cat)[rnd.nextInt(dict.get(cat).length)];
 
         char[] blanked = chosenWord.toCharArray();
         int numBlanks = (int)(chosenWord.length() / 2.0 + .5) - 1;
@@ -71,7 +73,7 @@ public class CallOutFragment extends Fragment implements Minigame {
 
         Log.d("debuglog", "word: " + chosenWord);
 
-        final SpeechRecognizer speech = SpeechRecognizer.createSpeechRecognizer(getContext());
+        speech = SpeechRecognizer.createSpeechRecognizer(getContext());
         final Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speech.setRecognitionListener(new RecognitionListener() {
             @Override
@@ -102,14 +104,10 @@ public class CallOutFragment extends Fragment implements Minigame {
             @Override
             public void onError(int error) {
                 Log.d("debuglog", "error " + error);
-                if (error == 7 || error == 6) {
-                    //speech.cancel();
-                    speech.stopListening();
+                if (error == 7 || error == 6 || error == 8) {
+                    //speech.stopListening();
                     speech.startListening(recognizerIntent);
                 }
-                /*if (error == 9 || error == 2) {
-                    ((MainActivity)getActivity()).CompleteMinigame();
-                }*/
             }
 
             @Override
@@ -123,17 +121,21 @@ public class CallOutFragment extends Fragment implements Minigame {
                         Log.d("debuglog", "Correct!");
                         correct = true;
 
-                        getActivity().runOnUiThread(new Runnable(){
-                            @Override
-                            public void run() {
-                                String construct = "";
-                                for (char c : chosenWord.toCharArray()) {
-                                    construct += c + " ";
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String construct = "";
+                                    for (char c : chosenWord.toCharArray()) {
+                                        construct += c + " ";
+                                    }
+                                    guess.setText(construct);
+                                    guess.setTextColor(Color.GREEN);
                                 }
-                                guess.setText(construct);
-                                guess.setTextColor(Color.GREEN);
-                            }
-                        });
+                            });
+                        } catch (NullPointerException e) {
+                            Log.d("debuglog", e.toString());
+                        }
 
                         ((MainActivity)getActivity()).CompleteMinigame();
                         break;
@@ -141,7 +143,7 @@ public class CallOutFragment extends Fragment implements Minigame {
                 }
 
                 if (!correct) {
-                    speech.cancel();
+                    speech.stopListening();
                     speech.startListening(recognizerIntent);
                 } else {
                     speech.stopListening();
@@ -157,17 +159,35 @@ public class CallOutFragment extends Fragment implements Minigame {
 
             @Override
             public void onEvent(int eventType, Bundle params) {
-
+                Log.d("debuglog", "event " + eventType + " happened!");
             }
         });
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en");
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getContext().getPackageName());
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, SpeechRecognizer.RESULTS_RECOGNITION);
         speech.cancel();
         speech.startListening(recognizerIntent);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        speech.cancel();
+        speech.destroy();
+    }
+
+    public void gameOver() {
+        getView().post(new Runnable(){
+            public void run(){
+            speech.stopListening();
+            speech.destroy();
+            }
+        });
     }
 
     private void requestRecordAudioPermission() {

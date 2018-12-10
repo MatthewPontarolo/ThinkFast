@@ -16,4 +16,8 @@ public class TouchMazeFragment extends Fragment implements Minigame {
         View view = inflater.inflate(R.layout.touch_maze_fragment, container,false);
         return view;
     }
+
+    public void gameOver() {
+
+    }
 }
