@@ -1,8 +1,8 @@
 Finger-guided maze:
 - Use pixel color detection; from there it’s as straightforward as pre-drawing mazes or making some way to generate them on a grid system
 
-Physical ball maze:
-- Rotate the phone to let the ball roll through the maze
+ShakeQ:
+- Sets of math expressions are randomnized with defining characteristics. The user has to shake on the specified characteristic.
 
 Call Out:
 - Words are pulled from a dictionary and have letters pulled to create blanks.  The user has to call out words, trying to guess what the words are.
