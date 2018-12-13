@@ -1,3 +1,6 @@
+## CS184 - Think Fast
+### Annie Bai, Matthew Pontarolo, Kevin Son, Andrew Zhang
+
 Finger-guided maze:
 - Use pixel color detection; from there it’s as straightforward as pre-drawing mazes or making some way to generate them on a grid system
 
