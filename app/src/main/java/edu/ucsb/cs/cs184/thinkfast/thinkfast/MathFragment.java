@@ -30,10 +30,11 @@ public class MathFragment extends Fragment implements Minigame {
         Types of question sets with a common relationship
      */
     // @TODO: check for overlaps in categories...
-    String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3", "2+4*6", "2", "54", "44", "78"};
-    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9", "2+1*3", "4+3", "7+8*3", "33", "3", "5", "7", "11", "13", "23", "29", "31"};
-    String[] primes = new String[]{"1", "3", "5", "7", "11", "13", "23", "29", "31", "1+2", "2+3", "2+1*3", "4+3", "7+8*3"};
-    //String[] integers = new String[]{"1", "44", "123", "54", "69", "78"};
+    String[] evens = new String[]{"1+1", "2+2", "0+2", "2*3", "4*3", "2+4*6", "2", "54", "44", "78", "10-2", "12*2-8", "3/2 + 2/4", "102", "4+8*10", "8*11", "14", "24+4", "10*5-5+8+3"};
+    String[] odds = new String[]{"1+2", "2+3", "1+8", "3*7", "3*9", "2+1*3", "4+3", "7+8*3", "33", "3", "7", "11", "13", "23", "31", "7*11", "49", "7*13"};
+    String[] primes = new String[]{"1", "3", "7", "11", "13", "23", "31", "1+2", "2+3", "2+1*3", "4+3", "7+8*3"};
+    String[] threes = new String[]{"78", "54", "3", "33", "1+2", "2*3", "4*3", "1+8", "3*9", "3*7", "102", "4+8*10"};
+    String[] sevens = new String[]{"4+8*10", "3*7", "4+3", "7*11", "14", "24+4", "49", "10*5-5+8+3", "7*13"};
 
     String[] list;
 
@@ -58,7 +59,7 @@ public class MathFragment extends Fragment implements Minigame {
     TextView text;
     TextView prompt;
     Timer timer;
-    int count = 0;
+    int count;
     View view;
     String type;
     private SensorManager mSensorManager;
@@ -81,9 +82,13 @@ public class MathFragment extends Fragment implements Minigame {
         masterSets.put("Evens", evens);
         masterSets.put("Odds", odds);
         masterSets.put("Primes", primes);
-        //masterSets.put("Integers", integers);
+        masterSets.put("Multiples of 3", threes);
+        masterSets.put("Multiples of 7", sevens);
 
-        list = new String[]{"Evens", "Odds", "Primes"};
+        // reset
+        count = 0;
+
+        list = new String[]{"Evens", "Odds", "Primes", "Multiples of 3", "Multiples of 7"};
 
         // choose a target category randomly
         //targetQ = evens;
@@ -122,7 +127,18 @@ public class MathFragment extends Fragment implements Minigame {
 
                             String str = "Shake on " + type + "!";
                             prompt.setText(str);
-                            String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
+                            String displayQ;
+                            // give them a freebie on the first one
+                            // if they miss, random
+                            if (count == 0)
+                            {
+                                displayQ = targetQ[rnd.nextInt(targetQ.length)];
+                                count++;
+                            }
+                            else
+                            {
+                                displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
+                            }
                             setDisplayQ(displayQ);
                         }
                     });
@@ -130,7 +146,7 @@ public class MathFragment extends Fragment implements Minigame {
                     Log.d("debuglog", e.toString());
                 }
             }
-        }, 1, 3000);
+        }, 1, 2000);
 
 
         // ShakeActivity detection
@@ -220,7 +236,9 @@ public class MathFragment extends Fragment implements Minigame {
         }
 
         @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        public void onAccuracyChanged(Sensor sensor, int accuracy)
+
+        {
 
         }
     };
@@ -233,14 +251,21 @@ public class MathFragment extends Fragment implements Minigame {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable(){
-                    @Override
-                    public void run() {
-                        Random rnd = new Random();
-                        String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
-                        setDisplayQ(displayQ);
-                    }
-                });
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Random rnd = new Random();
+
+                            String str = "Shake on " + type + "!";
+                            prompt.setText(str);
+                            String displayQ = masterQ.get(rnd.nextInt(masterQ.size()));
+                            setDisplayQ(displayQ);
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    Log.d("debuglog", e.toString());
+                }
             }
         }, 1, 2000);
 
